@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import org.mariadb.jdbc.Connection;
 
@@ -32,7 +33,7 @@ public class Database {
 			
 			createTables();
 		} catch (ClassNotFoundException | SQLException | IOException e) {
-			// TODO: handle exception
+			Logger.getLogger(Database.class.getName());
 		}
 		
 	}
@@ -50,7 +51,7 @@ public class Database {
 				conn.close();
 				conn = null;
 			} catch (SQLException e) {
-				e.printStackTrace();
+				Logger.getLogger(Database.class.getName());
 			}
 		}
 	}
@@ -84,7 +85,14 @@ public class Database {
 					""");
 			
 			if(Database.typeDB.equals("mariadb")) {
-				
+				sqls.add("""
+							CREATE TABLES IF NOT EXISTS Departamento (
+							id_dep INT PRIMARY KEY AUTO_INCREMENT,
+							nombre_dep VARCHAR(255) UNIQUE NOT NULL,
+							jefe INT
+							
+							)
+						""");
 			}
 		}
 	}
