@@ -1,7 +1,7 @@
 package dao;
 
 import io.IO;
-import model.Empleado;
+import model.Proyecto;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
@@ -11,81 +11,81 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class EmpleadoDao {
+public class ProyectoDao {
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     private EntityManager entityManager;
 
-    public EmpleadoDao(EntityManager entityManager) {
+    public ProyectoDao(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
-    
+ 
 
-	public List<Empleado> findAll() {
-        List<Empleado> empleados = new ArrayList<>();
+	public List<Proyecto> findAll() {
+        List<Proyecto> proyectos = new ArrayList<>();
 
         try {
-            Query query = entityManager.createQuery("SELECT e FROM Empleado e");
-            empleados = query.getResultList();
+            Query query = entityManager.createQuery("SELECT p FROM Proyecto p");
+            proyectos = query.getResultList();
         } catch (PersistenceException e) {
-            logger.severe("Error finding all employees: " + e.getMessage());
+            logger.severe("Error finding all projects: " + e.getMessage());
         }
 
-        return empleados;
+        return proyectos;
     }
 
-    public Empleado findById(Integer id) {
+    public Proyecto findById(Integer id) {
         try {
-            return entityManager.find(Empleado.class, id);
+            return entityManager.find(Proyecto.class, id);
         } catch (PersistenceException e) {
-            logger.severe("Error finding employee by ID: " + e.getMessage());
+            logger.severe("Error finding project by ID: " + e.getMessage());
         }
 
         return null;
     }
 
-    public List<Empleado> findByName(String name) {
-        List<Empleado> empleados = new ArrayList<>();
+    public List<Proyecto> findByName(String name) {
+        List<Proyecto> proyectos = new ArrayList<>();
 
         try {
-            Query query = entityManager.createQuery("SELECT e FROM Empleado e WHERE e.nombre LIKE :name");
+            Query query = entityManager.createQuery("SELECT p FROM Proyecto p WHERE p.nombre LIKE :name");
             query.setParameter("name", name + "%");
-            empleados = query.getResultList();
+            proyectos = query.getResultList();
         } catch (PersistenceException e) {
-            logger.severe("Error finding employees by name: " + e.getMessage());
+            logger.severe("Error finding projects by name: " + e.getMessage());
         }
 
-        return empleados;
+        return proyectos;
     }
 
-    public boolean create(Empleado e) {
+    public boolean create(Proyecto p) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.persist(e);
+            entityManager.persist(p);
             entityManager.getTransaction().commit();
             return true;
         } catch (PersistenceException e1) {
             if (entityManager.getTransaction().isActive()) {
                 entityManager.getTransaction().rollback();
             }
-            logger.severe("Error creating employee: " + e1.getMessage());
+            logger.severe("Error creating project: " + e1.getMessage());
         }
 
         return false;
     }
 
-    public boolean update(Empleado e) {
+    public boolean update(Proyecto p) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.merge(e);
+            entityManager.merge(p);
             entityManager.getTransaction().commit();
             return true;
         } catch (PersistenceException e1) {
             if (entityManager.getTransaction().isActive()) {
                 entityManager.getTransaction().rollback();
             }
-            logger.severe("Error updating employee: " + e1.getMessage());
+            logger.severe("Error updating project: " + e1.getMessage());
         }
 
         return false;
@@ -94,15 +94,15 @@ public class EmpleadoDao {
     public boolean delete(Integer id) {
         try {
             entityManager.getTransaction().begin();
-            Empleado employee = entityManager.find(Empleado.class, id);
-            entityManager.remove(employee);
+            Proyecto project = entityManager.find(Proyecto.class, id);
+            entityManager.remove(project);
             entityManager.getTransaction().commit();
             return true;
         } catch (PersistenceException e) {
             if (entityManager.getTransaction().isActive()) {
                 entityManager.getTransaction().rollback();
             }
-            logger.severe("Error deleting employee: " + e.getMessage());
+            logger.severe("Error deleting project: " + e.getMessage());
         }
 
         return false;

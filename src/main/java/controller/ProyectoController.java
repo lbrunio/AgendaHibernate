@@ -3,23 +3,26 @@ package controller;
 import java.util.List;
 import java.util.logging.Logger;
 
-import dao.EmpleadoDao;
+
+import dao.ProyectoDao;
 import jakarta.persistence.EntityManager;
 import model.Empleado;
+import model.Proyecto;
+import view.ProyectoView;
 
-import view.EmpleadoView;
 
-public class EmpleadoController {
+
+public class ProyectoController {
 	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-	private final EmpleadoDao dao;
-	private final EmpleadoView view;
+	private final ProyectoDao dao;
+	private final ProyectoView view;
 	
 	private EntityManager em;
 
-	public EmpleadoController() {
-		dao = new EmpleadoDao(em);
-		view = new EmpleadoView();
+	public ProyectoController() {
+		dao = new ProyectoDao(em);
+		view = new ProyectoView();
 	}
 	
 	public void menu() {
@@ -54,14 +57,14 @@ public class EmpleadoController {
 	private void getByStartsName() {
 		String initial = view.searchInitialName();
 		logger.info("Empleados starts with " + initial);
-		List<Empleado> list = dao.findByName(initial + "%");
+		List<Proyecto> list = dao.findByName(initial + "%");
 		view.show(list);		
 	}
 
 	private void getById() {
 		Integer id = view.searchByCode();
 		logger.info("Empleado with id: " + id);
-		Empleado entity = dao.findById(id);
+		Proyecto entity = dao.findById(id);
 		if (entity != null) {
 			view.show(entity);
 		}
@@ -69,13 +72,13 @@ public class EmpleadoController {
 	
 	private void getAll() {
 		logger.info("Obtaining Empleados");
-		List<Empleado> list = dao.findAll();
+		List<Proyecto> list = dao.findAll();
 		view.show(list);
 	}
 
 	private void create() {
 		logger.info("Creating Empleado");
-		Empleado entity = view.add();
+		Proyecto entity = view.add();
 		boolean added = dao.create(entity);
 		view.result(added ? "Added" : "Not added");
 	}
@@ -84,8 +87,8 @@ public class EmpleadoController {
 		boolean updated = false;
 		Integer id = view.searchByCode();
 		logger.info("Updating Empleado with id: " + id);
-		Empleado entity = dao.findById(id);
-		Empleado d = null;
+		Proyecto entity = dao.findById(id);
+		Proyecto d = null;
 		if (entity != null) {
 			d = view.update(entity);
 			updated = dao.update(d);
@@ -97,7 +100,7 @@ public class EmpleadoController {
 		boolean deleted = false;
 		Integer id = view.searchByCode();
 		logger.info("Deleting Empleado with id: " + id);
-		Empleado entity = dao.findById(id);
+		Proyecto entity = dao.findById(id);
 		if (entity != null) {
 			deleted = dao.delete(id);
 		}
