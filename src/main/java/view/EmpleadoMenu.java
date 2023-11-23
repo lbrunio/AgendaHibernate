@@ -68,7 +68,7 @@ public class EmpleadoMenu {
      */
     public static Integer options() {
         IO.println("""
-                1. Add empleado
+                1. Add e
                 2. Remove empleado
                 3. Update empleado
                 4. Show all empleado

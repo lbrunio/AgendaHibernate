@@ -1,6 +1,5 @@
 package dao;
 
-import io.IO;
 import model.Empleado;
 
 import jakarta.persistence.EntityManager;

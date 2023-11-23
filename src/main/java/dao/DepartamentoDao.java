@@ -3,13 +3,19 @@ package dao;
 import io.IO;
 import model.Departamento;
 import model.Empleado;
-
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.Query;
+import jakarta.persistence.RollbackException;
+import jakarta.persistence.TransactionRequiredException;
+import jakarta.transaction.TransactionRolledbackException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import org.hibernate.query.QueryArgumentException;
 
 public class DepartamentoDao {
     private final Logger logger = Logger.getLogger(this.getClass().getName());
@@ -28,7 +34,7 @@ public class DepartamentoDao {
         try {
             Query query = entityManager.createQuery("SELECT d FROM Departamento d LEFT JOIN FETCH d.jefe");
             departamentos = query.getResultList();
-        } catch (Exception e) {
+        } catch (QueryArgumentException e) {
             logger.severe("Error finding all departments: " + e.getMessage());
         }
 
@@ -38,7 +44,7 @@ public class DepartamentoDao {
     public Departamento findById(Integer id) {
         try {
             return entityManager.find(Departamento.class, id);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             logger.severe("Error finding department by ID: " + e.getMessage());
         }
 
@@ -52,7 +58,7 @@ public class DepartamentoDao {
             Query query = entityManager.createQuery("SELECT d FROM Departamento d WHERE d.nombre_dep LIKE :inicio");
             query.setParameter("inicio", inicio + "%");
             departamentos = query.getResultList();
-        } catch (Exception e) {
+        } catch (QueryArgumentException e) {
             logger.severe("Error finding departments by name: " + e.getMessage());
         }
 
@@ -65,7 +71,7 @@ public class DepartamentoDao {
             entityManager.persist(d);
             entityManager.getTransaction().commit();
             return true;
-        } catch (Exception e) {
+        } catch (EntityExistsException | IllegalArgumentException | TransactionRequiredException | RollbackException e) {
             if (entityManager.getTransaction().isActive()) {
                 entityManager.getTransaction().rollback();
             }
@@ -81,7 +87,7 @@ public class DepartamentoDao {
             entityManager.merge(d);
             entityManager.getTransaction().commit();
             return true;
-        } catch (Exception e) {
+        } catch (IllegalArgumentException | TransactionRequiredException | RollbackException e) {
             if (entityManager.getTransaction().isActive()) {
                 entityManager.getTransaction().rollback();
             }
@@ -98,7 +104,7 @@ public class DepartamentoDao {
             entityManager.remove(department);
             entityManager.getTransaction().commit();
             return true;
-        } catch (Exception e) {
+        } catch (EntityNotFoundException | IllegalArgumentException | TransactionRequiredException e) {
             if (entityManager.getTransaction().isActive()) {
                 entityManager.getTransaction().rollback();
             }
@@ -116,7 +122,7 @@ public class DepartamentoDao {
             if (d != null) {
                 empleados = (List<Empleado>) d.getEmpleados();
             }
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             logger.severe("Error getting employees for department: " + e.getMessage());
         }
 
